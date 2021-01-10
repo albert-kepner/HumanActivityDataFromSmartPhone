@@ -38,3 +38,37 @@ download.file(url=dataPath,mode="wb", method="auto", destfile=destinationPath)
 zipFile <- destinationPath
 outDir<-"data"
 unzip(zipFile,exdir=outDir)
+
+## Create path variables to locate all the relevant data files...
+dataPath <- "data/UCI HAR Dataset/"
+activityLabelsPath <- paste(dataPath, "activity_labels.txt", sep="")
+featuresPath <- paste(dataPath, "features.txt", sep="")
+testPath <- paste(dataPath,"test/",sep="")
+trainPath <- paste(dataPath, "train/", sep="")
+
+
+
+activityLabels <- read.table(activityLabelsPath, col.names=c("index", "activity"))
+featureLabels <- read.table(featuresPath, col.names=c("index", "feature"))
+
+
+subject_test_path <- paste(testPath, "subject_test.txt", sep="")
+X_test_path <- paste(testPath, "X_test.txt", sep="")
+Y_test_path <- paste(testPath, "Y_test.txt", sep="")
+
+subject_test <- read.table(subject_test_path)
+X_test <- read.table(X_test_path)
+Y_test <- read.table(Y_test_path)
+
+subject_train_path <- paste(trainPath, "subject_train.txt", sep="")
+X_train_path <- paste(trainPath, "X_train.txt", sep="")
+Y_train_path <- paste(trainPath, "Y_train.txt", sep="")
+
+subject_train <- read.table(subject_train_path)
+X_train <- read.table(X_train_path)
+Y_train <- read.table(Y_train_path)
+
+
+
+
+

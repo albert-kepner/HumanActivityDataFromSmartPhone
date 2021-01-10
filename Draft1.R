@@ -103,27 +103,31 @@ fixFeatureName <- function(name) {
   s1 <- sub("\\(\\)","", name)
   s2 <- gsub(",","_", s1)
   s3 <- gsub("-", "_", s2)
-  s3
+  s4 <- sub("\\)$","", s3)
+  s5 <- sub("\\)","_",s4)
+  s6 <- sub("\\(","_", s5)
+  s6
 }
 
+## Add variable names (column names) for all the measurements
+## with the special characters from the features eliminated.
 feature_names <- featureLabels$feature %>% fixFeatureName
-
 names(combined_data) <- feature_names
 
-glimpse(combined_data)
+## Create a factor out of the activity names in activityLabels
+activityLabels <- mutate(activityLabels, human_activity = factor(activity))
 
-
-
-
-subject_combined <- rbind(subject_train, subject_test)
-
-
+## From the original list of features, determine the
+## indicies of data showing mean and standard deviation measurments.
 mean_and_std_indicies <- grep("-mean|-std", featureLabels$feature)
 
+## subset the combined data to only show measurements for mean and standard deviation.
+## We use the indexes of the selected features, to select a subset of columns from
+## the combined data set.
+mean_and_std <- combined_data[,mean_and_std_indicies]
 
-mean_and_std_features <- featureLabels[mean_and_std_indicies,]
 
-mean_and_std_features
+names(mean_and_std)
 
 
 

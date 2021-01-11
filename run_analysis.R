@@ -114,8 +114,7 @@ fixFeatureName <- function(name) {
 feature_names <- featureLabels$feature %>% fixFeatureName
 names(combined_data) <- feature_names
 
-## Create a factor out of the activity names in activityLabels
-activityLabels <- mutate(activityLabels, human_activity = factor(activity))
+
 
 ## From the original list of features, determine the
 ## indicies of data showing mean and standard deviation measurments.
@@ -123,10 +122,38 @@ mean_and_std_indicies <- grep("-mean|-std", featureLabels$feature)
 
 ## subset the combined data to only show measurements for mean and standard deviation.
 ## We use the indexes of the selected features, to select a subset of columns from
-## the combined data set.
+## the combined data set. We now have 10229 obs. of 79 variables.
 mean_and_std <- combined_data[,mean_and_std_indicies]
 
 
-names(mean_and_std)
+## Create a factor out of the activity names in activityLabels
+activityLabels <- mutate(activityLabels, human_activity = factor(activity))
+
+## apply the human_activity factor to label all the rows in the 
+## activity_combined data_set.
+
+names(activity_combined) <- "activity_index"
+activity_combined <- mutate(activity_combined, human_activity = activityLabels$human_activity[activity_index])
 
 
+
+## Now that we have the correct subset of all the measurements,
+## We will add columns to indicate the subjects, and the human_activity
+## associated with each observation.
+
+
+Step4_Data <- cbind(subject_combined, activity_combined, mean_and_std)
+
+write.table(Step4_Data, file="data/step4_data.csv", sep=",", qmethod = "double", row.names=FALSE)
+
+
+## Using dplyr, group the data from Step4 by
+## human_activity and subject, and take the mean of
+## each of the 79 measurement variables within these groupings.
+
+Step5_Data <- Step4_Data %>%
+  group_by(human_activity, subject) %>%
+  summarize(across(tBodyAcc_mean_X:fBodyBodyGyroJerkMag_meanFreq, mean))
+
+
+write.table(Step5_Data, file="data/step5_data.txt", row.names=FALSE)
